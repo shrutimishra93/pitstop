@@ -11,11 +11,20 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
+    "pg": "^7.12.1",
     "prettier": "^1.18.2"
   },
   "devDependencies": {
     "eslint": "^6.6.0",
     "eslint-config-strongloop": "^2.1.0",
     "prettier": "1.18.2"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shrutimishra93/pitstop.git"
+  },
+  "bugs": {
+    "url": "https://github.com/shrutimishra93/pitstop/issues"
+  },
+  "homepage": "https://github.com/shrutimishra93/pitstop#readme"
 }

@@ -1,75 +1,58 @@
-'use strict';
 var express = require('express');
 var app = express();
+var db = require('pg');
 
-app.get('/', function(req, res) {
-  res.send('Hello World');
+var NODE_ENV = require('./constants');
+var DATABASES = require('./constants');
+
+app.get('/accessDoor', function(req, res) {
+  accessDoor(req, res);
 });
 
 app.listen(3000, function() {
   console.log('Example app listening on port 3000!');
 });
 
-var db = require('pg');
-var testDatabase = {
-  user: 'user',
-  password: 'password',
-  host: 'localhost',
-  database: 'staging',
-  port: 5432,
-};
-var stagingDatabase = {
-  user: 'user',
-  password: 'password',
-  host: 'localhost',
-  database: 'staging',
-  port: 5432,
-};
-var productionDatabase = {
-  user: 'user',
-  password: 'password',
-  host: 'localhost',
-  database: 'staging',
-  port: 5432,
-};
-let PROCEED;
 let ALLOWED_NAME = 'Joe';
 
 const accessDoor = (req, res) => {
-  var validation = true;
   const allowedName = ALLOWED_NAME; // this can be changed when
-  function validate() {
-    if (req.params.id === true) {
-      // must have id in request
-      validation = true;
-    } else {
-      validation = false;
+
+  const validate = () => {
+    console.log(JSON.stringify(req.body));
+    if (req.query && req.query.id && req.query.name === allowedName) {
+      return true;
     }
-    if (req.params.name !== allowedName) validation = false;
-    PROCEED = validation;
-  }
-  validate();
-  if (PROCEED === true) {
-    var a;
-    if (process.env.NODE_ENV === 'local') {
-      a = new db.Client(testDatabase);
+    return false;
+  };
+
+  if (validate()) {
+    var dbClient;
+    var dataBase;
+
+    if (process.env.NODE_ENV === NODE_ENV.LOCAL) {
+      dataBase = DATABASES.testDatabase;
+    } else if (process.env.NODE_ENV === NODE_ENV.STAGING) {
+      dataBase = DATABASES.stagingDatabase;
+    } else if (process.env.NODE_ENV === NODE_ENV.PRODUCTION) {
+      dataBase = DATABASES.productionDatabase;
     }
-    if (process.env.NODE_ENV === 'staging') {
-      a = new db.Client(stagingDatabase);
-    }
-    if (process.env.NODE_ENV === 'production') {
-      a = new db.Client(productionDatabase);
-    }
-    a.query(
+
+    // http://localhost:3000/accessDoor?id=1&name=Joe
+
+    dbClient = new db.Client(dataBase);
+    dbClient.query(
       'insert into entry_history values(' +
-        req.params.id +
-        ',' +
-        new Date() +
-        ')'
+      req.query.id +
+      ',' +
+      new Date() +
+      ')',
     );
 
-    res.send();
+    res.send('Success: Granted access to door for id: ' + req.query.id);
   } else {
+    res.send('Error occured: ' +
+    "'id' or 'name' parameter missing/invalid or 'name' does not match.");
     throw new Error();
   }
 };

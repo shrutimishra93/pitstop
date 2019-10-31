@@ -6,5 +6,15 @@
     "es6": true,
     "jest": true,
     "mocha": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 2017,
+    "sourceType": "module"
+  },
+  "rules": {
+    "space-before-function-paren": 0,
+    "new-cap": 0,
+    "no-unused-expressions": 0,
+    "no-unused-vars": ["error", { "varsIgnorePattern": "should|expect" }]
   }
 }
