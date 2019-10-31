@@ -10,7 +10,8 @@
   "author": "shruti mishra",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "prettier": "^1.18.2"
   },
   "devDependencies": {
     "eslint": "^6.6.0",
