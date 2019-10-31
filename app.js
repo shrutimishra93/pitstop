@@ -9,17 +9,27 @@ app.get('/accessDoor', function(req, res) {
   accessDoor(req, res);
 });
 
+let ALLOWED_NAME = 'Joe';
+
+app.post('/updateAllowedName', function(req, res) {
+  if (req.query.newName) {
+    ALLOWED_NAME = req.query.newName;
+    return res.json({STATUS: 'success'});
+  } else {
+    res.send('Error occured: ' +
+    "'newName' param is missing or invalid");
+    throw new Error();
+  }
+});
+
 app.listen(3000, function() {
   console.log('Example app listening on port 3000!');
 });
-
-let ALLOWED_NAME = 'Joe';
 
 const accessDoor = (req, res) => {
   const allowedName = ALLOWED_NAME; // this can be changed when
 
   const validate = () => {
-    console.log(JSON.stringify(req.body));
     if (req.query && req.query.id && req.query.name === allowedName) {
       return true;
     }
